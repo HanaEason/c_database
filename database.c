@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,14 +21,15 @@ InputBuffer *new_input_buffer()
    return input_buffer;
 }
 
-void print_prompt() { printf("db > "); }
+void print_prompt()
+{
+   printf("db > ");
+}
 
 void read_input(InputBuffer *input_buffer)
 {
 
-   char *s = fgets(&(input_buffer->buffer), 1024, stdin);
-
-   size_t bytes_read = strlen(s);
+   ssize_t bytes_read = getline(&(input_buffer->buffer), &(input_buffer->buffer_length), stdin);
 
    if (bytes_read <= 0)
    {
@@ -49,6 +51,7 @@ void close_input_buffer(InputBuffer *input_buffer)
 int main(int argc, char *argv[])
 {
    InputBuffer *input_buffer = new_input_buffer();
+
    while (true)
    {
       print_prompt();
